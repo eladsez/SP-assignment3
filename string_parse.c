@@ -109,6 +109,11 @@ void BFunc(char word[WORD], char text[TXT]){
   char *atbash = malloc(strlen(word) * sizeof(char) + 1);
   char *reverseAtbash = malloc(strlen(word) * sizeof(char) + 1);
 
+  if (reverseAtbash == NULL || atbash == NULL){
+    printf("BFunc malloc ERROR \n");
+    exit(0);
+  }
+
   makeAtbash(word, atbash);
   strcpy(reverseAtbash, atbash);
   reverse(reverseAtbash, strlen(reverseAtbash));
@@ -133,6 +138,59 @@ void BFunc(char word[WORD], char text[TXT]){
   free(atbash);
 }
 
-void CFunc(char word[WORD], char text[TXT]){
+int containC(char *wordCopy, char c){
+  for (int i = 0; i < strlen(wordCopy); ++i){
+    if (wordCopy[i] == c){
+      wordCopy[i] = ' ';
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
 
+int cmpC(char word[WORD], char *text, int end){
+  //valid check
+  if (*text == ' ')
+    return FALSE;
+
+  char *wordCopy = malloc(strlen(word) * sizeof(char) + 1);
+  if (wordCopy == NULL){
+    printf("cmpC malloc ERROR \n");
+    exit(0);
+  }
+  strcpy(wordCopy, word);
+
+  for (int i = 0; i < end; ++i){
+    if (text[i] == ' ')
+      continue;
+    else if(!containC(wordCopy, text[i]))
+      return FALSE;
+  }
+  for (int i = 0; i < strlen(word); ++i){
+    if(wordCopy[i] != ' ')
+      return FALSE;
+  }
+
+  free(wordCopy);
+  return TRUE;
+}
+
+void CFunc(char word[WORD], char text[TXT]){
+  printf("Anagram Sequences: ");
+  int start = 0;
+  int end = strlen(word);
+  int flag = FALSE;
+
+  while (start < strlen(text) - strlen(word)){
+    while (text[end - 1] != '~' && end - start -1 <= WORD){
+      if(cmpC(word, text + start, end - start)){
+        printCArr((text + start), end - start, flag);
+        flag = TRUE;
+        break;
+      }
+      ++end;
+    }
+    ++start;
+    end = start + strlen(word);
+  }
 }

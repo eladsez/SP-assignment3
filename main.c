@@ -25,4 +25,6 @@ int main() {
   AFunc(word, text);
   printf("\n");
   BFunc(word, text);
+  printf("\n");
+  CFunc(word, text);
 }
